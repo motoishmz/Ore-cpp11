@@ -1,25 +1,31 @@
 #include "ofMain.h"
 
-class Dragon
+class Shape
 {
-	int resolution;
+	int resolution = 60;
 	bool inited_without_argument = false;
 	
 public:
-	Dragon(int res)
+	Shape(int res)
 	: resolution(res)
 	{}
 	
-	Dragon()
-	: Dragon(3) // <-- c++11からconstructorのdelegationがつかえる
-//	, inited_without_argument(true) // <-- ただし他の変数初期化はここでは出来ない。コメント解くと死亡
+	Shape()
+	// c++11からconstructorのdelegationがつかえる
+	: Shape(3)
+	// ただし他の変数初期化はここでは出来ない。
+	// ↓コメント解くと死亡
+//	, inited_without_argument(true)
 	{
 		inited_without_argument = true;
 	}
 	
-	inline int getResolution() const { return resolution; }
-	inline bool isInitedWithoutArgs() const { return inited_without_argument; }
-	
+	inline int getResolution() const {
+		return resolution;
+	}
+	inline bool isInitedWithoutArgs() const {
+		return inited_without_argument;
+	}
 	inline void shoutout() {
 		cout << "yo i'm inited with " << (inited_without_argument ? "no args" : "argument " + ofToString(resolution)) << endl;
 	}
@@ -29,7 +35,7 @@ public:
 class ofApp : public ofBaseApp
 {
 	
-	vector<Dragon*> dragons;
+	vector<Shape*> shapes;
 	
 public:
 	
@@ -37,18 +43,18 @@ public:
 		
 		cout << endl << __PRETTY_FUNCTION__ << endl;
 		
-		dragons = {
+		shapes = {
 			// 引数ありなしどちらもOK
 			// c++11から `std::initializer_list` が使えるので `push_back` 等いらずでコリっと書ける
-			new Dragon(),
-			new Dragon(ofRandom(4, 10)),
-			new Dragon(),
-			new Dragon(ofRandom(4, 10)),
-			new Dragon(),
-			new Dragon(ofRandom(4, 10))
+			new Shape(),
+			new Shape(ofRandom(4, 10)),
+			new Shape(),
+			new Shape(ofRandom(4, 10)),
+			new Shape(),
+			new Shape(ofRandom(4, 10))
 		};
 		
-		for (auto d: dragons) { d->shoutout(); }
+		for (auto s: shapes) { s->shoutout(); }
 		
 		ofBackground(0, 0, 20);
 	}
@@ -63,15 +69,21 @@ public:
 		{
 			ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
 			
-			for (int i=0; i<dragons.size(); i++)
+			for (int i=0; i<shapes.size(); i++)
 			{
+				const ofPoint pos(radius * sin((2 * PI / shapes.size()) * i),
+								  radius * cos((2 * PI / shapes.size()) * i));
+				
+				const int resolution = shapes[i]->getResolution();
+				const double degrees = t * static_cast<int>(shapes[i]->isInitedWithoutArgs());
+				const ofColor color = shapes[i]->isInitedWithoutArgs() ? ofColor::limeGreen : ofColor::gray;
+				
 				ofPushMatrix();
 				{
-					ofTranslate(radius * sin((2 * PI / dragons.size()) * i),
-								radius * cos((2 * PI / dragons.size()) * i));
-					ofRotate(t * static_cast<int>(dragons[i]->isInitedWithoutArgs()), 0., 0., 1.);
-					ofSetColor(dragons[i]->isInitedWithoutArgs() ? ofColor::limeGreen : ofColor::gray);
-					ofSetCircleResolution(dragons[i]->getResolution());
+					ofTranslate(pos);
+					ofRotate(degrees, 0., 0., 1.);
+					ofSetColor(color);
+					ofSetCircleResolution(resolution);
 					ofDrawCircle(0, 0, 30);
 				}
 				ofPopMatrix();
