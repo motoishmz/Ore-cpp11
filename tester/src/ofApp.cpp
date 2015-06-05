@@ -1,5 +1,4 @@
 #include "ofMain.h"
-#include <initializer_list>
 
 class SceneManager
 {
@@ -29,7 +28,6 @@ public:
 		our_scenes.insert(end(our_scenes),
 						  begin(scenes),
 						  end(scenes));
-		
 	}
 	
 	void draw() {
