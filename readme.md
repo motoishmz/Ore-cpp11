@@ -1,1 +1,1 @@
-c++11 study note for gt OF0.9.0
+c++11 study note for OF gt 0.9.0
