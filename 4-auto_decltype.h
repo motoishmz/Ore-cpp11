@@ -89,7 +89,7 @@ public:
 		const float t = ofGetElapsedTimef() * 2.5f;
 		const int our_int = add(10, sin(t)*7);
 		const ofVec3f our_vec = add(ofVec3f::zero(), ofVec3f{sin(t) * 100.f, cos(t) * 100.f});
-
+		
 		ofPushMatrix();
 		{
 			ofTranslate(ofGetWidth() * 0.5f, ofGetHeight() * 0.5f);
