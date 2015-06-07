@@ -2,7 +2,7 @@
 
 // 特に意味なし、テスト用
 template <typename T>
-static T yolo(T arg) {
+static T yolo(const T arg) {
 	
 	if (typeid(arg) == typeid(double))
 		cout << __PRETTY_FUNCTION__ << " i am a double" << endl;
@@ -17,13 +17,13 @@ static T yolo(T arg) {
 // sample code内で iteratorとvalue の両方渡したいのでtemplateに
 // これがbiking on a tightrope...
 template <typename T>
-void dump(T t) {
+void dump(const T t) {
 	cout << t->first << ": " << t->second << endl;
 }
 
 // int, double, ofVec3f なんでもござれなadd
 template <typename T, typename S>
-auto add(T t, S s) // この時点では返り血の型が分からない
+auto add(const T t, const S s) // この時点では返り血の型が分からない
 -> decltype(t + s) // ので、ここでdecltype
 {
 	return t + s;
@@ -63,7 +63,7 @@ public:
 			cout << "---" << endl;
 			
 			// というか上記loopはrange baseのループでもっと簡単に
-			for(auto it: our_map) {
+			for(const auto &it: our_map) {
 				dump(&it);
 			}
 			
