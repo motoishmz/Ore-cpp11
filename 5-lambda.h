@@ -1,6 +1,5 @@
 #include "ofMain.h"
 
-
 class ofApp : public ofBaseApp
 {
 	
@@ -134,6 +133,8 @@ public:
 			[this](){ hi(); }();
 			
 		}
+		
+		ofExit(); // 今回はサンプル描画ナシ
 	}
 	
 	void hi() {
