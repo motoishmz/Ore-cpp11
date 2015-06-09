@@ -1,145 +1,212 @@
 #include "ofMain.h"
+#include <unordered_map>
+
+
+namespace op {
+	
+	template <typename T>
+	static T inc (T t) {
+		return t + 1;
+	}
+	
+	template <typename T>
+	static T dec (T t) {
+		return t - 1;
+	}
+	
+	template <typename T>
+	static T doubly (T t) {
+		return t + t;
+	}
+	
+	template <typename T, typename S>
+	static auto sum (T t, S s)
+	-> decltype(t + s) {
+		return t + s;
+	}
+}
+
+namespace pred {
+	static bool isEven(int i) {
+		return i%2 == 0;
+	}
+	
+	static bool isOdd(int i) {
+		return i%2 == 1;
+	}
+}
+
 
 class ofApp : public ofBaseApp
 {
 	
-public:
+#pragma mark -
+#pragma mark shortcuts
 	
-	void setup() {
+	template <typename Collection>
+	void dump(Collection col) {
 		
-		// 例文
-		[](){}();
-		
-		
-		// [lambda capture]
-		// 外部変数を扱う場合、関数実体に渡す変数をコピーにするか参照にするか等をここで明示できる
-		[]
-		
-		// [parameter declaration clause]
-		// 関数の引数定義
-		()
-		
-		// [compound statement]
-		// 関数の本体
-		{}
-		
-		// function call expression
-		// 関数の呼び出し
-		()
-		;
-		
-		{
-			auto our_function = [](int a, int b)
-			// -> unsigned int
-			{
-				
-				// auto ofApp::setup()::(anonymous class)::operator()() const
-				cout << __PRETTY_FUNCTION__ << endl;
-				
-				// 返り値の型は、decltype(a + b)。
-				// unsigned int あたりのコメントを外すと型指定ができる
-				return a + b;
-			};
-			
-			cout << our_function(10, 20) << endl;
+		for (const auto &c: col) {
+			cout << c << ", ";
 		}
-		
-		{
-			const int k_size = 30;
-			const int k_max = 50;
-			
-			auto our_comparison = [](int &lhs, int &rhs) { return lhs < rhs; };
-			auto our_generator = [](){ return floor(ofRandom(k_max)); };
-			
-			vector<int> array(k_size);
-			
-			generate(begin(array),
-					 end(array),
-					 our_generator);
-			
-			sort(begin(array),
-				 end(array),
-				 our_comparison);
-			
-			for (const auto &v: array)
-				cout << v << endl;
-		}
-		
-		{
-			/*
-			 http://ja.wikipedia.org/wiki/C%2B%2B11
-			[]        //ラムダ関数外のどの変数も使うことができない。
-			[x, &y]   //xはコピーされる。yは参照渡しされる。
-			[&]       //すべての外部変数は、もし使われれば暗黙的に参照渡しされる。
-			[=]       //すべての外部変数は、もし使われれば暗黙的にコピーされる。
-			[&, x]    //xは明示的にコピーされる。その他の変数は参照渡しされる。
-			[=, &z]   //zは明示的に参照渡しされる。その他の変数はコピーされる。
-			 */
-			
-			auto dump = [](int a, int b) { cout << "a:" << a << ", b:" << b << endl; };
-			
-			{
-				cout << "---" << endl;
-				
-				int v1 = 10, v2 = 20;
-				
-				dump(v1, v2); // 10, 20
-				
-				// すべての外部変数をコピーとして扱う
-				// コピーした値を変更したい場合は mutable修飾
-				[=]() mutable {
-					v1 += 10;
-					v2 += 10;
-				}();
-				dump(v1, v2); // 10, 20
-			}
-			{
-				cout << "---" << endl;
-				
-				int v1 = 10, v2 = 20;
-				
-				dump(v1, v2); // 10, 20
-				
-				// すべての外部変数を参照として扱う
-				[&]() {
-					v1 += 10;
-					v2 += 10;
-				}();
-				dump(v1, v2); // 20, 30
-			}
-			{
-				cout << "---" << endl;
-				
-				int v1 = 10, v2 = 20;
-				
-				dump(v1, v2); // 10, 20
-				
-				// v1だけコピー、その他は参照
-				[&, v1]() mutable {
-					v1 += 10;
-					v2 += 10;
-				}();
-				dump(v1, v2); // 10, 30
-			}
-		}
-		
-		{
-			cout << "---" << endl;
-			
-			// ↓これは通らない。
-			// 関数中から ofApp::hi() は見えない
-			// [](){ hi(); }();
-			
-			// scopeとして this を渡すと通る
-			[this](){ hi(); }();
-			
-		}
-		
-		ofExit(); // 今回はサンプル描画ナシ
+		cout << endl << "---" << endl;
+	}
+
+	template <typename Value>
+	void cat(Value val) {
+		cout << val;
+		cout << endl << "---" << endl;
+	}
+
+	template <typename Operation, typename Collection>
+	void for_each(Collection col, Operation op) {
+		std::for_each(col.begin(),
+					  col.end(),
+					  op);
 	}
 	
-	void hi() {
-		cout << "hi." << endl;
+#pragma mark -
+#pragma mark たのしいfunctional
+	
+	template <typename Operation, typename Collection>
+	Collection map(Operation op, Collection col) {
+		transform(col.begin(),
+				  col.end(),
+				  col.begin(),
+				  op);
+		
+		return col;
+	}
+	
+	template <typename Predicate, typename Collection>
+	Collection filterNot(Predicate pred, Collection col) {
+		
+		auto iter = remove_if(begin(col),
+							  end(col),
+							  pred);
+		
+		col.erase(iter, end(col));
+		
+		return col;
+	}
+	
+	template <typename Predicate, typename Collection>
+	Collection filter(Predicate pred, Collection col) {
+		
+		return filterNot([pred]
+						 (typename Collection::value_type i) {
+							 return !pred(i);
+						 }, col);
+	}
+	
+	template <typename Operation, typename T, typename Collection>
+	T reduce(Operation op, T init, Collection col) {
+
+//		（保留）
+//		return accumulate(begin(col),
+//						  end(col),
+//						  op);
+		
+		T acc = init;
+		
+		for (auto &v: col) {
+			acc = op(acc, v);
+		}
+		
+		return acc;
+	}
+	
+	// http://stackoverflow.com/questions/19071268/function-composition-in-c-c11
+	// https://functionalcpp.wordpress.com/2013/08/09/function-composition/
+	// http://rosettacode.org/wiki/Function_composition#C.2B.2B
+//	template <typename T, typename Ta, typename S, typename Sa>
+//	auto compose(function<T(Ta)> f, function<S(Sa)> g)
+//	-> decltype( function(decltype(f(g()))) )
+//	{
+//		return <#expression#>
+//	}
+
+	
+	//
+	//function lastName(obj)
+	//{
+	//	return obj.last;
+	//}
+	//
+	//function lowerCase(str)
+	//{
+	//	return str.toLowerCase();
+	//}
+	
+	template <typename F1, typename F2>
+	function< int(int) > compose(F1 f, F2 g) {
+		return [=](int x) { return f( g(x) ); };
+	}
+
+	
+public:
+	
+ 
+	void setup() {
+		
+		
+		
+		{
+			vector<int> data = { 1, 2, 3, 4, 5 };
+			cat( compose(op::inc<int>, op::inc<int>)(10) );
+//
+//			{
+//				vector<int> col;
+//				copy(begin(data),
+//					 end(data),
+//					 back_inserter(col));
+//				
+//				dump( map(op::inc<int>, col) );
+//			}
+//			{
+//				vector<int> col;
+//				copy(begin(data),
+//					 end(data),
+//					 back_inserter(col));
+//				
+//				dump( map(op::doubly<int>, map(op::dec<int>, col)) );
+//			}
+//			{
+//				vector<int> col;
+//				copy(begin(data),
+//					 end(data),
+//					 back_inserter(col));
+//				
+//				cat( reduce(op::sum<int, int>, 0, col) );
+//				cat( reduce(op::sum<int, int>, 10, col) );
+//				
+//				
+//				
+//				
+//				auto f = [](){};
+//				auto g = [](){};
+//				
+//				
+//				
+//				dump( filter(pred::isOdd, col) );
+//				dump( filter(pred::isEven, col) );
+//				dump( map(op::doubly<int>, filter(pred::isOdd, col)) );
+//			}
+		}
+		
+		
+		{
+			unordered_map<string, int> data = {
+				{"Motoi Shimizu", 30},
+				{"Motoi Ishibashi", 40},
+				{"Takaaki Ishibashi", 45},
+				{"Takayuki Ito ", 35}
+			};
+			
+			{
+				
+			}
+		}
 	}
 };
 
@@ -148,6 +215,9 @@ public:
 #pragma mark -
 #pragma mark main
 int main(){
+	
+	auto t = [](){};
+	
 	ofSetupOpenGL(500, 500, OF_WINDOW);
 	ofRunApp(new ofApp());
 }
