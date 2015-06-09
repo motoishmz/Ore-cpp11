@@ -1,6 +1,4 @@
 #include "ofMain.h"
-#include <unordered_map>
-
 
 namespace op {
 	
@@ -102,10 +100,11 @@ class ofApp : public ofBaseApp
 	template <typename Operation, typename T, typename Collection>
 	T reduce(Operation op, T init, Collection col) {
 
-//		（保留）
-//		return accumulate(begin(col),
-//						  end(col),
-//						  op);
+		/* [保留]
+		return accumulate(begin(col),
+						  end(col),
+						  op);
+		*/
 		
 		T acc = init;
 		
@@ -116,16 +115,27 @@ class ofApp : public ofBaseApp
 		return acc;
 	}
 	
-	// http://stackoverflow.com/questions/19071268/function-composition-in-c-c11
-	// https://functionalcpp.wordpress.com/2013/08/09/function-composition/
-	// http://rosettacode.org/wiki/Function_composition#C.2B.2B
-//	template <typename T, typename Ta, typename S, typename Sa>
-//	auto compose(function<T(Ta)> f, function<S(Sa)> g)
-//	-> decltype( function(decltype(f(g()))) )
-//	{
-//		return <#expression#>
-//	}
-
+	template <typename F1, typename F2, typename ... Args>
+	auto compose(F1 f, F2 g)
+	-> function< int(int) > {
+		// intで決め打ち。。
+		// 本当はなんでも受け取れるようにしたい。
+		// c++14なら auto ... で解決
+		// http://stackoverflow.com/questions/19071268/function-composition-in-c-c11
+		// https://functionalcpp.wordpress.com/2013/08/09/function-composition/
+		// http://rosettacode.org/wiki/Function_composition#C.2B.2B
+		return [=](int x) { return f( g(x) ); };
+	}
+	
+	template <typename T>
+	T identity(T x) {
+		return x;
+	}
+	
+	template <typename T>
+	T partial(T x) {
+		return x;
+	}
 	
 	//
 	//function lastName(obj)
@@ -137,61 +147,45 @@ class ofApp : public ofBaseApp
 	//{
 	//	return str.toLowerCase();
 	//}
-	
-	template <typename F1, typename F2>
-	function< int(int) > compose(F1 f, F2 g) {
-		return [=](int x) { return f( g(x) ); };
-	}
 
 	
 public:
 	
- 
 	void setup() {
-		
-		
 		
 		{
 			vector<int> data = { 1, 2, 3, 4, 5 };
-			cat( compose(op::inc<int>, op::inc<int>)(10) );
-//
-//			{
-//				vector<int> col;
-//				copy(begin(data),
-//					 end(data),
-//					 back_inserter(col));
-//				
-//				dump( map(op::inc<int>, col) );
-//			}
-//			{
-//				vector<int> col;
-//				copy(begin(data),
-//					 end(data),
-//					 back_inserter(col));
-//				
-//				dump( map(op::doubly<int>, map(op::dec<int>, col)) );
-//			}
-//			{
-//				vector<int> col;
-//				copy(begin(data),
-//					 end(data),
-//					 back_inserter(col));
-//				
-//				cat( reduce(op::sum<int, int>, 0, col) );
-//				cat( reduce(op::sum<int, int>, 10, col) );
-//				
-//				
-//				
-//				
-//				auto f = [](){};
-//				auto g = [](){};
-//				
-//				
-//				
-//				dump( filter(pred::isOdd, col) );
-//				dump( filter(pred::isEven, col) );
-//				dump( map(op::doubly<int>, filter(pred::isOdd, col)) );
-//			}
+
+			{
+				vector<int> col;
+				copy(begin(data),
+					 end(data),
+					 back_inserter(col));
+				
+				dump( map(op::inc<int>, col) ); // 2, 3, 4, 5, 6,
+			}
+			{
+				vector<int> col;
+				copy(begin(data),
+					 end(data),
+					 back_inserter(col));
+				
+				dump( map(op::doubly<int>, map(op::dec<int>, col)) ); // 0, 2, 4, 6, 8,
+			}
+			{
+				vector<int> col;
+				copy(begin(data),
+					 end(data),
+					 back_inserter(col));
+				
+				cat( reduce(op::sum<int, int>, 0, col) ); // 15
+				cat( reduce(op::sum<int, int>, 10, col) ); // 25
+				cat( compose(op::inc<int>, op::inc<int>)(10) ); // 12
+				cat( compose(op::doubly<int>, op::inc<int>)(10) ); // 22
+				dump( filter(pred::isOdd, col) ); // 1, 3, 5,
+				dump( filter(pred::isEven, col) ); // 2, 4,
+				dump( map(op::doubly<int>, filter(pred::isOdd, col)) ); // 2, 6, 10,
+			}
 		}
 		
 		
@@ -202,10 +196,6 @@ public:
 				{"Takaaki Ishibashi", 45},
 				{"Takayuki Ito ", 35}
 			};
-			
-			{
-				
-			}
 		}
 	}
 };
@@ -215,9 +205,6 @@ public:
 #pragma mark -
 #pragma mark main
 int main(){
-	
-	auto t = [](){};
-	
 	ofSetupOpenGL(500, 500, OF_WINDOW);
 	ofRunApp(new ofApp());
 }
