@@ -6,22 +6,22 @@
 namespace op {
 	
 	template <typename T>
-	static T inc (T t) {
+	static T inc(T t) {
 		return t + 1;
 	}
 	
 	template <typename T>
-	static T dec (T t) {
+	static T dec(T t) {
 		return t - T(1);
 	}
 	
 	template <typename T>
-	static T doubly (T t) {
+	static T doubly(T t) {
 		return t + t;
 	}
 	
 	template <typename T, typename S>
-	static auto sum (T t, S s)
+	static auto sum(T t, S s)
 	-> decltype(t + s) {
 		return t + s;
 	}
