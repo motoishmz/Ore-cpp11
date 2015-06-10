@@ -160,7 +160,7 @@ public:
 		
 		vector<ofVec3f> positions = { ofVec3f(-100), ofVec3f::one(), ofVec3f(100) };
 		
-		//		cat( compose(op::doubly<ofVec3f>, op::inc<ofVec3f>)(ofVec3f::one()) ); // compose( ... ) をintで決め打ちしてるので出来ない。。
+		// cat( compose(op::doubly<ofVec3f>, op::inc<ofVec3f>)(ofVec3f::one()) ); // compose( ... ) をintで決め打ちしてるので出来ない。。
 		cat( reduce(op::sum<ofVec3f, ofVec3f>, ofVec3f::zero(), positions) ); // 1, 1, 1
 		dump( filter(pred::isOverground, positions) ); // 1, 1, 1, 100, 100, 100,
 		dump( map(op::doubly<ofVec3f>, positions) ); // -200, -200, -200, 2, 2, 2, 200, 200, 200,
