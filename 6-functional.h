@@ -54,13 +54,12 @@ class ofApp : public ofBaseApp
 		for (const auto &c: col) {
 			cout << c << ", ";
 		}
-		cout << endl << "---" << endl;
+		cout << endl;
 	}
 	
 	template <typename Value>
 	void cat(Value val) {
-		cout << val;
-		cout << endl << "---" << endl;
+		cout << val << endl;
 	}
 	
 	template <typename Operation, typename Collection>
@@ -144,26 +143,35 @@ public:
 	
 	void setup() {
 		
-		vector<int> data = { 1, 2, 3, 4, 5 };
+		{
+			vector<int> data = { 1, 2, 3, 4, 5 };
+			
+			cat( compose(op::inc<int>, op::doubly<int>)(10) ); // 21
+			cat( compose(op::doubly<int>, op::inc<int>)(10) ); // 22
+			cat( reduce(op::sum<int, int>, 0, data) ); // 15
+			cat( reduce(op::sum<int, int>, 10, data) ); // 25
+			
+			dump( filter(pred::isOdd, data) ); // 1, 3, 5,
+			dump( filter(pred::isEven, data) ); // 2, 4,
+			dump( map(op::inc<int>, data) ); // 2, 3, 4, 5, 6,
+			dump( map(op::doubly<int>, map(op::dec<int>, data)) ); // 0, 2, 4, 6, 8,
+			dump( map(op::doubly<int>, filter(pred::isOdd, data)) ); // 2, 6, 10,
+		}
 		
-		cat( compose(op::inc<int>, op::doubly<int>)(10) ); // 21
-		cat( compose(op::doubly<int>, op::inc<int>)(10) ); // 22
-		cat( reduce(op::sum<int, int>, 0, data) ); // 15
-		cat( reduce(op::sum<int, int>, 10, data) ); // 25
 		
-		dump( filter(pred::isOdd, data) ); // 1, 3, 5,
-		dump( filter(pred::isEven, data) ); // 2, 4,
-		dump( map(op::inc<int>, data) ); // 2, 3, 4, 5, 6,
-		dump( map(op::doubly<int>, map(op::dec<int>, data)) ); // 0, 2, 4, 6, 8,
-		dump( map(op::doubly<int>, filter(pred::isOdd, data)) ); // 2, 6, 10,
+		cout << "---" << endl;
 		
 		
-		vector<ofVec3f> positions = { ofVec3f(-100), ofVec3f::one(), ofVec3f(100) };
-		
-		// cat( compose(op::doubly<ofVec3f>, op::inc<ofVec3f>)(ofVec3f::one()) ); // compose( ... ) をintで決め打ちしてるので出来ない。。
-		cat( reduce(op::sum<ofVec3f, ofVec3f>, ofVec3f::zero(), positions) ); // 1, 1, 1
-		dump( filter(pred::isOverground, positions) ); // 1, 1, 1, 100, 100, 100,
-		dump( map(op::doubly<ofVec3f>, positions) ); // -200, -200, -200, 2, 2, 2, 200, 200, 200,
+		{
+			vector<ofVec3f> positions = { ofVec3f(-100), ofVec3f::one(), ofVec3f(100) };
+			
+			// cat( compose(op::doubly<ofVec3f>, op::inc<ofVec3f>)(ofVec3f::one()) ); // compose( ... ) をintで決め打ちしてるので出来ない。。
+			
+			cat( reduce(op::sum<ofVec3f, ofVec3f>, ofVec3f::zero(), positions) ); // 1, 1, 1
+			cat( reduce(op::sum<ofVec3f, ofVec3f>, ofVec3f(200), positions) ); //201, 201, 201
+			dump( filter(pred::isOverground, positions) ); // 1, 1, 1, 100, 100, 100,
+			dump( map(op::doubly<ofVec3f>, positions) ); // -200, -200, -200, 2, 2, 2, 200, 200, 200,
+		}
 		
 		ofExit(); // 今回もサンプル描画ナシ
 	}
