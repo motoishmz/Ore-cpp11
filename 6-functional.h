@@ -1,5 +1,8 @@
 #include "ofMain.h"
 
+// 昔JavaScriptで書いてたfunctional programmingテストを移植するテスト
+// https://gist.github.com/motoishmz/8176963
+
 namespace op {
 	
 	template <typename T>
@@ -53,13 +56,13 @@ class ofApp : public ofBaseApp
 		}
 		cout << endl << "---" << endl;
 	}
-
+	
 	template <typename Value>
 	void cat(Value val) {
 		cout << val;
 		cout << endl << "---" << endl;
 	}
-
+	
 	template <typename Operation, typename Collection>
 	void for_each(Collection col, Operation op) {
 		std::for_each(col.begin(),
@@ -128,6 +131,7 @@ class ofApp : public ofBaseApp
 		// http://stackoverflow.com/questions/19071268/function-composition-in-c-c11
 		// https://functionalcpp.wordpress.com/2013/08/09/function-composition/
 		// http://rosettacode.org/wiki/Function_composition#C.2B.2B
+		
 		return [=](int x) { return f( g(x) ); };
 	}
 	
@@ -156,7 +160,7 @@ public:
 		
 		vector<ofVec3f> positions = { ofVec3f(-100), ofVec3f::one(), ofVec3f(100) };
 		
-//		cat( compose(op::doubly<ofVec3f>, op::inc<ofVec3f>)(ofVec3f::one()) ); // compose( ... ) をintで決め打ちしてるので出来ない。。
+		//		cat( compose(op::doubly<ofVec3f>, op::inc<ofVec3f>)(ofVec3f::one()) ); // compose( ... ) をintで決め打ちしてるので出来ない。。
 		cat( reduce(op::sum<ofVec3f, ofVec3f>, ofVec3f::zero(), positions) ); // 1, 1, 1
 		dump( filter(pred::isOverground, positions) ); // 1, 1, 1, 100, 100, 100,
 		dump( map(op::doubly<ofVec3f>, positions) ); // -200, -200, -200, 2, 2, 2, 200, 200, 200,
