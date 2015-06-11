@@ -7,7 +7,7 @@ namespace op {
 	
 	template <typename T>
 	static T inc(T t) {
-		return t + 1;
+		return t + T(1);
 	}
 	
 	template <typename T>
