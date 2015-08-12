@@ -158,7 +158,7 @@ public:
 			dump( map(op::doubly<int>, filter(pred::isOdd, data)) ); // 2, 6, 10,
 		}
 		
-
+		
 		cout << "---" << endl;
 		
 		
@@ -166,6 +166,7 @@ public:
 			vector<ofVec3f> positions = { ofVec3f(-100), ofVec3f::one(), ofVec3f(100) };
 			
 			// cat( compose(op::doubly<ofVec3f>, op::inc<ofVec3f>)(ofVec3f::one()) ); // compose( ... ) をintで決め打ちしてるので出来ない。。
+			// c++14に期待
 			
 			cat( reduce(op::sum<ofVec3f, ofVec3f>, ofVec3f::zero(), positions) ); // 1, 1, 1
 			cat( reduce(op::sum<ofVec3f, ofVec3f>, ofVec3f(200), positions) ); //201, 201, 201

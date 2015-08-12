@@ -1,42 +1,43 @@
 #include "ofMain.h"
 
-class SceneManager
-{
+class SceneManager {
+	
 public:
 	
-	class Scene
-	{
+	class Scene {
+		
 		bool active;
 		uint my_id;
 		ofPoint pos;
 		
 	public:
+		
 		Scene(int id)
 		: my_id(id)
 		, active(false)
-		{
-		}
+		{}
 		
 		inline void setActive(bool active) { this->active = active; }
 		inline uint getId() const { return my_id; }
 		inline bool getActive() const { return active; }
 	};
 	
-	SceneManager(initializer_list<Scene> scenes)
-	{
+	
+	SceneManager(initializer_list<Scene> scenes) {
+		
 		our_scenes.clear();
 		our_scenes.insert(end(our_scenes),
 						  begin(scenes),
 						  end(scenes));
 	}
 	
+	
 	void draw() {
 		
 		ofPushStyle();
-		
 		{
-			for (int i=0; i<our_scenes.size(); i++)
-			{
+			for (int i=0; i<our_scenes.size(); i++) {
+				
 				const SceneManager::Scene &scene = our_scenes[i];
 				
 				const ofPoint pos = {
@@ -50,9 +51,9 @@ public:
 				
 			}
 		}
-		
 		ofPopStyle();
 	}
+	
 	
 	void refresh(vector<int> scene_indeces) {
 		for (auto &scene: our_scenes) {
@@ -67,7 +68,6 @@ public:
 protected:
 	
 	deque<Scene> our_scenes;
-	
 };
 
 
@@ -89,8 +89,6 @@ public:
 			
 			cout << "---" << endl;
 		}
-		
-		
 		{
 			// initializer_listでinit
 			deque<int> our_queue = {234, 52, 36, 356, 7, 246};
@@ -107,15 +105,12 @@ public:
 			
 			cout << "---" << endl;
 		}
-		
-		
 		{
 			// 便利がいい
 			map<string, int> dict = {{"Akira", 22}, {"Johnny", 38}, {"Millia", 16}};
 			for (auto &obj: dict)
 				cout << obj.first << ":" << obj.second << endl;
 		}
-		
 		
 		SM = new SceneManager{ // <-- () じゃなくて {}
 			SceneManager::Scene(0),
@@ -131,7 +126,9 @@ public:
 		};
 	}
 	
+	
 	void draw() {
+		
 		SM->draw();
 		
 		stringstream report;
@@ -140,7 +137,9 @@ public:
 		ofDrawBitmapStringHighlight(report.str(), 30, 30, ofColor::limeGreen);
 	}
 	
+	
 	void keyPressed(int key) {
+		
 		if (key == ' ') {
 			test_list.clear();
 			test_list = {
