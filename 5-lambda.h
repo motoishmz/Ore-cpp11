@@ -49,7 +49,7 @@ public:
 			auto our_comparison = [](const int &lhs, const int &rhs) { return lhs < rhs; };
 			auto our_generator = [](){ return std::floor(ofRandom(k_max)); };
 			
-			std::vector<int> std::array(k_size);
+			std::vector<int> array(k_size);
 			std::generate(std::begin(array), std::end(array), our_generator);
 			std::sort(std::begin(array), std::end(array), our_comparison);
 			
