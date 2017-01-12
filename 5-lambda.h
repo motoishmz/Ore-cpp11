@@ -46,8 +46,8 @@ public:
 			const int k_size = 30;
 			const int k_max = 50;
       
-			auto our_comparison = [](int &lhs, int &rhs) { return lhs < rhs; };
-			auto our_generator = [](){ return floor(ofRandom(k_max)); };
+			auto our_comparison = [](const int &lhs, const int &rhs) { return lhs < rhs; };
+			auto our_generator = [](){ return std::floor(ofRandom(k_max)); };
 			
 			std::vector<int> std::array(k_size);
 			std::generate(begin(array), end(array), our_generator);
