@@ -15,15 +15,15 @@ public:
 		// 外部変数を扱う場合、関数実体に渡す変数をコピーにするか参照にするか等をここで明示できる
 		[]
 		
-		// [parameter declaration clause]
+		// (parameter declaration clause)
 		// 関数の引数定義
 		()
 		
-		// [compound statement]
+		// {compound statement}
 		// 関数の本体
 		{}
 		
-		// function call expression
+		// () <-- function call expression
 		// 関数の呼び出し
 		()
 		;
@@ -32,9 +32,7 @@ public:
 			auto our_function = [](int a, int b)
 			// -> unsigned int
 			{
-				
-				// auto ofApp::setup()::(anonymous class)::operator()() const
-				cout << __PRETTY_FUNCTION__ << endl;
+				cout << __PRETTY_FUNCTION__ << endl; // auto ofApp::setup()::(anonymous class)::operator()() const
 				
 				// 返り値の型は、decltype(a + b)。
 				// unsigned int あたりのコメントを外すと型指定ができる
@@ -47,22 +45,17 @@ public:
 		{
 			const int k_size = 30;
 			const int k_max = 50;
-			
+      
 			auto our_comparison = [](int &lhs, int &rhs) { return lhs < rhs; };
 			auto our_generator = [](){ return floor(ofRandom(k_max)); };
 			
-			vector<int> array(k_size);
+			std::vector<int> std::array(k_size);
+			std::generate(begin(array), end(array), our_generator);
+			std::sort(begin(array), end(array), our_comparison);
 			
-			generate(begin(array),
-					 end(array),
-					 our_generator);
-			
-			sort(begin(array),
-				 end(array),
-				 our_comparison);
-			
-			for (const auto &v: array)
+			for (const auto &v: array) {
 				cout << v << endl;
+			}
 		}
 		
 		{
